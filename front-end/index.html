@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detector</title>
+    <script src="jquery-3.7.1.min.js" ></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyDpbcCWDUIDepogFZbYwtfx_mji5xp5rTA",
+          authDomain: "emotiondetector-96ebf.firebaseapp.com",
+          projectId: "emotiondetector-96ebf",
+          storageBucket: "emotiondetector-96ebf.appspot.com",
+          messagingSenderId: "143445279548",
+          appId: "1:143445279548:web:1d2add192183197e319439",
+          measurementId: "G-50EZ948SNP"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
+</head>
+<body>
+    <div id="page1" class="basePage">
+        <div id="home" class="page">
+            <h1>Emotion Detector</h1>
+            <p class="semibold">WELCOME!</p>
+            <p>This is an application to demonstrate the use of deep learning in the task of detecting human emotions.</p>
+            <button id="startButton">START</button>
+            <a id="learnMoreButton" class="textButton" href="#learnMore">Learn More</a>
+            <a id="hideLearnMoreButton" class="textButton" href="#home">Hide Details</a>
+            
+        </div>
+        <div id="learnMore" class="page">
+            <p>The following are the steps involved in the detection process:</p>
+                <div>
+                    <p class="semibold">Your Device</p>
+                    <ol>
+                        <li>Provides a camera layout for you to click an image.</li>
+                        <li>Sends the clicked image to the server.</li>
+                    </ol>
+                </div>
+                <div>
+                    <p class="semibold">Server</p>
+                    <ol>
+                        <li>Looks for your face in the image.</li>
+                        <li>If found, extracts and feeds it to the pre-trained Neural Network.</li>
+                        <li>This network would then predict the emotion and returns two components to your device.
+                            <ol>
+                                <li>Predicted emotion label</li>
+                                <li>The co-ordinates of your face in the original image.</li>
+                            </ol>
+                        </li>
+                    </ol>
+                </div>
+                <div>
+                    <p class="semibold">Your device, again.</p>
+                    <ol>
+                        <li>Reads the data sent by the server and renders the predicted emotion label on the screen.</li>
+                        <li>Uses the face co-ordinates to draw a rectangle and highlight the facial region.</li>
+                    </ol>
+                </div>
+                <div>
+                    <p class="semibold">Implementation Details</p>
+                    <p class="mediumText">This is a light-weight model built using PyTorch. The FER dataset used is around 20,000 - 48x48 sized images with cropped faces.</p>
+                    <p class="mediumText">These faces are labelled to one of the seven emotions - Angry, Happy, Fear, Disgust, Sad, Surprise, and Neutral.</p>
+                    <p class="mediumText">The model's architecture and implementation specifics are:</p>
+                    
+                        <ul style="text-align: center; list-style: disc;">
+                            <li>3 Convolution + Max-Pooling Layers.</li>
+                            <li>1 Dropout Layer for regularization.</li>
+                            <li>2 Linear Layers.</li>
+                            <li>CV2's HAAR Cascade classifier.</li>
+                            <li>Training Batch size: 128</li>
+                            <li>Optimizer: Adam</li>
+                            <li>Loss Function: CrossEntropy</li>
+                        </ul>
+                    <p class="mediumText">This model, at the time of hosting is not completely trained and hence the lower accuracy. Newer weights will be updated in the next deployement.</p>
+                </div>
+        </div>
+        <p class="smallText">Developed by: <a class="selfA" href="https://manyuduttaluri.web.app/" target="_blank">Manyu Duttaluri</a></p>
+        
+    </div>
+    <div id="page2" class="basePage">
+        <div  class="page">
+            <p class="semibold">Notice</p>
+            <p>Please be informed that this application requires your camera to work. You can also upload a photo from your device.</p>
+            <p>Also, none of your images will be stored in the server.</p>
+            <button id="backButton2" class="noStyleButton">BACK</button>
+            <button id="nextButton2">CONFIRM</button>
+        </div>
+    </div>
+    <div id="page3" class="basePage">
+        <div class="page">
+            <div style="display: flex; flex-wrap: wrap;">
+                <button id="camerStartButton" onclick="saveIGMG()">START CAMERA</button>
+                <button id="captureButton">CAPTURE</button>
+                <button id="retryButton">RETRY</button>
+                
+            </div>
+            <div style="display: flex; gap:10px">
+                <p id="emotionLabel"></p>
+                <p id="emotionValue"></p>
+            </div>
+            <p id="cameraPermissionText">Cannot connect to your camera. (Could be your permission settings)</p>
+            <!-- <p id="uploadORLabel">OR</p> -->
+            <!-- <input id="uploadButton" class="button" type="file" id="myFile" name="filename"> -->
+
+            <!-- <button id="uploadButton">UPLOAD IMAGE</button> -->
+            <p class="loadingText">loading...</p>
+            <p id="serverError">Cannot connect to the server right now. Please try again later.</p>
+            <p id="faceError">Oops! Cannot find a face. Please make sure that your face is visible in the image.</p>
+
+            <video id="video" playsinline></video>
+            <canvas id="canvas"></canvas>
+          
+            <canvas id="resCanvas"></canvas>
+            <button id="backButton3" class="noStyleButton">BACK</button>
+        </div>
+    </div>
+</body>
+</html>
